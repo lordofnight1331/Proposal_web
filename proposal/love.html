@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>You Love Me</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background: url('https://images.unsplash.com/photo-1503264116251-35a269479413?fit=crop&w=1600&q=80') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-family: 'Dancing Script', cursive;
+      cursor: pointer;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    #message {
+      position: relative;
+      font-size: 2.5rem;
+      color: #fff;
+      text-align: center;
+      padding: 0 20px;
+      max-width: 90%;
+      text-shadow: 0 0 10px #ff6ec4, 0 0 20px #7873f5;
+      z-index: 2;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      opacity: 0;
+    }
+
+    #message.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div id="message"></div>
+
+  <script>
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  function drawHeart(x, y, size) {
+    ctx.beginPath();
+    for (let i = 0; i <= Math.PI * 2; i += 0.01) {
+      const a = 16 * Math.pow(Math.sin(i), 3);
+      const b = 13 * Math.cos(i) - 5 * Math.cos(2 * i) - 2 * Math.cos(3 * i) - Math.cos(4 * i);
+      ctx.lineTo(x + size * a, y - size * b);
+    }
+    ctx.closePath();
+    ctx.fillStyle = "red";
+    ctx.shadowColor = "red";
+    ctx.shadowBlur = 50;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const x = canvas.width / 2;
+    const y = canvas.height / 2 - 40;
+    drawHeart(x, y, 10);
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  const quotes = [
+    "I look at you and see the rest of my life in front of my eyes.",
+    "In all the world, there is no heart for me like yours. In all the world, there is no love for you like mine.",
+    "I didn’t choose you. My heart did.",
+    "You are my today and all of my tomorrows.",
+    "If I had a flower for every time I thought of you, I could walk in my garden forever.",
+    "You + Me = ❤️",
+    "Forever isn’t long enough with you.",
+    "Home is wherever I’m with you.",
+    "I’m much more me when I’m with you.",
+    "Every love story is beautiful, but ours is my favorite.",
+    "You're my favorite notification.",
+    "Even the stars are jealous of the sparkle in your eyes.",
+    "Loving you is like breathing – I just can’t stop.",
+    "You are the reason I believe in love.",
+    "You turned all my ‘laters’ into ‘forevers.’"
+  ];
+
+  let currentQuote = 0;
+  const messageDiv = document.getElementById('message');
+  let allQuotesShown = false;
+
+  function showNextQuote() {
+    if (currentQuote < quotes.length) {
+      messageDiv.classList.remove('show');
+      setTimeout(() => {
+        messageDiv.innerText = quotes[currentQuote];
+        messageDiv.classList.add('show');
+        currentQuote++;
+        if (currentQuote === quotes.length) {
+          allQuotesShown = true;
+        }
+      }, 400);
+    } else if (allQuotesShown) {
+      window.location.href = "final.html";
+    }
+  }
+
+  document.body.addEventListener('click', showNextQuote);
+
+  setTimeout(showNextQuote, 1000);
+</script>
+
+</body>
+</html>

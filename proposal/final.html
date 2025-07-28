@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Forever Yours</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background: url('https://images.unsplash.com/photo-1503264116251-35a269479413?fit=crop&w=1600&q=80') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Dancing Script', cursive;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: white;
+      text-align: center;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+    }
+
+    #stars {
+      z-index: 0;
+    }
+
+    #canvas {
+      z-index: 1;
+    }
+
+    h1 {
+      z-index: 2;
+      font-size: 3rem;
+      text-shadow: 0 0 10px #ff6ec4, 0 0 20px #7873f5;
+      margin: 0;
+      opacity: 0;
+      transition: opacity 2s ease;
+    }
+
+    h1.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <canvas id="canvas"></canvas>
+  <h1 id="finalText">I love you 💖</h1>
+
+  <script>
+    // ⭐ Star field background
+    const starsCanvas = document.getElementById('stars');
+    const starsCtx = starsCanvas.getContext('2d');
+    let sw, sh;
+
+    function resizeStars() {
+      sw = starsCanvas.width = window.innerWidth;
+      sh = starsCanvas.height = window.innerHeight;
+    }
+    resizeStars();
+    window.addEventListener("resize", resizeStars);
+
+    const starCount = 150;
+    const stars = Array.from({ length: starCount }, () => ({
+      x: Math.random() * sw,
+      y: Math.random() * sh,
+      r: Math.random() * 1.5 + 0.5,
+      d: Math.random() * 0.5 + 0.1
+    }));
+
+    function drawStars() {
+      starsCtx.clearRect(0, 0, sw, sh);
+      stars.forEach(star => {
+        starsCtx.beginPath();
+        starsCtx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        starsCtx.fillStyle = `rgba(255,255,255,0.8)`;
+        starsCtx.shadowColor = "#fff";
+        starsCtx.shadowBlur = 8;
+        starsCtx.fill();
+        star.y += star.d;
+        if (star.y > sh) {
+          star.y = 0;
+          star.x = Math.random() * sw;
+        }
+      });
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+  </script>
+
+  <script>
+    // 💖 Thread heart animation
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const finalText = document.getElementById("finalText");
+
+    let w, h;
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    function getHeartPoints(n) {
+      const points = [];
+      for (let i = 0; i < n; i++) {
+        const t = (Math.PI * 2 * i) / n;
+        const x = 16 * Math.pow(Math.sin(t), 3);
+        const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+        points.push({ x, y: -y });
+      }
+      return points;
+    }
+
+    const heartPoints = getHeartPoints(250).map(p => ({
+      x: w / 2 + p.x * 10,
+      y: h / 2 + p.y * 10
+    }));
+
+    const particles = heartPoints.map(p => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      tx: p.x,
+      ty: p.y,
+      trail: []
+    }));
+
+    let heartCompleted = false;
+
+    function animateHeart() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.03)";
+      ctx.fillRect(0, 0, w, h);
+
+      let totalDistance = 0;
+
+      particles.forEach(p => {
+        const dx = p.tx - p.x;
+        const dy = p.ty - p.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        totalDistance += distance;
+
+        p.x += dx * 0.02;
+        p.y += dy * 0.02;
+
+        p.trail.push({ x: p.x, y: p.y });
+        if (p.trail.length > 60) p.trail.shift();
+
+        ctx.beginPath();
+        for (let i = 0; i < p.trail.length - 1; i++) {
+          const pt = p.trail[i];
+          const next = p.trail[i + 1];
+          const alpha = (i + 1) / p.trail.length;
+          ctx.strokeStyle = `rgba(255, 0, 0, ${alpha})`;
+          ctx.lineWidth = 1.5;
+          ctx.moveTo(pt.x, pt.y);
+          ctx.lineTo(next.x, next.y);
+        }
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = "red";
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = "red";
+        ctx.fill();
+      });
+
+      // Show the text when heart is mostly formed
+      if (!heartCompleted && totalDistance < 2000) {
+        heartCompleted = true;
+        setTimeout(() => {
+          finalText.classList.add("show");
+        }, 800); // small delay for smooth reveal
+      }
+
+      requestAnimationFrame(animateHeart);
+    }
+    animateHeart();
+  </script>
+</body>
+</html>

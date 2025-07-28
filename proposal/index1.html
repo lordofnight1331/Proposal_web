@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Love Animation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      overflow: hidden;
+      height: 100%;
+      background: url('https://images.unsplash.com/photo-1503264116251-35a269479413?fit=crop&w=1600&q=80') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Dancing Script', cursive;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    #sparkleCanvas {
+      z-index: 2;
+    }
+
+    #text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3.5rem;
+      font-family: 'Dancing Script', cursive;
+      font-weight: 600;
+      white-space: nowrap;
+      z-index: 3;
+      display: flex;
+      gap: 0.1em;
+      pointer-events: none;
+    }
+
+    #text span {
+      opacity: 0;
+      transform: translateY(20px);
+      background: linear-gradient(45deg, #ee0581, #1710d2);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px #ee0581, 0 0 20px #1710d2;
+      animation: fadeInLetter 1s forwards;
+    }
+
+    #text.show span {
+      animation: fadeInLetter 0.6s forwards;
+    }
+
+    @keyframes fadeInLetter {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    #buttons {
+      position: absolute;
+      top: 65%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 4;
+      display: flex;
+      gap: 2rem;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    #buttons.show {
+      opacity: 1;
+    }
+
+    .love-btn {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8rem;
+      padding: 0.5em 1.5em;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(45deg, #ff6ec4, #7873f5);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 10px #ff6ec4, 0 0 20px #7873f5;
+      transition: transform 0.3s ease, background 0.3s;
+      position: relative;
+    }
+
+    .love-btn:hover {
+      transform: scale(1.1);
+      background: linear-gradient(45deg, #f7797d, #FBD786);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <canvas id="sparkleCanvas"></canvas>
+
+  <div id="text">
+    <span>Y</span><span>o</span><span>u</span><span> </span><span>l</span><span>o</span><span>v</span>
+    <span>e</span><span> </span><span>m</span><span>e</span><span> </span><span>💖</span>
+  </div>
+
+  <div id="buttons">
+    <button class="love-btn yes">Yes 💘</button>
+    <button class="love-btn no">No 💔</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let w, h;
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    let t = 0;
+    let flyY = 0;
+    let showText = false;
+    let particles = Array.from({ length: 100 }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 2,
+      speed: Math.random() * 0.5 + 0.5
+    }));
+
+    function drawHeart(x, y, size) {
+      ctx.beginPath();
+      for (let i = 0; i <= Math.PI * 2; i += 0.01) {
+        const a = 16 * Math.pow(Math.sin(i), 3);
+        const b = 13 * Math.cos(i) - 5 * Math.cos(2 * i) - 2 * Math.cos(3 * i) - Math.cos(4 * i);
+        ctx.lineTo(x + size * a, y - size * b);
+      }
+      ctx.closePath();
+      ctx.fillStyle = "red";
+      ctx.shadowColor = "red";
+      ctx.shadowBlur = 40;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    function drawWings(x, y, size, time) {
+      const flap = Math.sin(time * 3) * 5;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = 1.2;
+      ctx.globalAlpha = 0.7;
+
+      for (let side of [-1, 1]) {
+        ctx.beginPath();
+        ctx.moveTo(0, -size * 2);
+        ctx.bezierCurveTo(
+          side * size * 3 + flap * side,
+          -size * 3,
+          side * size * 4 + flap * side,
+          -size,
+          side * size * 3,
+          size
+        );
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawParticles() {
+      ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        p.y -= p.speed;
+        if (p.y < 0) {
+          p.y = h;
+          p.x = Math.random() * w;
+        }
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, w, h);
+      drawParticles();
+
+      const x = w / 2;
+      const y = h / 2 - flyY;
+      const beat = Math.sin(t * 3) * 1.5 + 10;
+
+      drawWings(x, y, beat, t);
+      drawHeart(x, y, beat);
+
+      flyY += 0.5;
+      if (flyY > h / 2 + 100 && !showText) {
+        showText = true;
+        setTimeout(showFinalMessage, 1000);
+      }
+
+      t += 0.02;
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    function animateLetters() {
+      const spans = document.querySelectorAll('#text span');
+      spans.forEach((span, i) => {
+        span.style.animationDelay = `${i * 0.1}s`;
+        span.parentElement.classList.add('show');
+      });
+    }
+
+    function showFinalMessage() {
+      animateLetters();
+      document.getElementById('buttons').classList.add('show');
+    }
+
+    // Sparkles canvas
+    const sparkleCanvas = document.getElementById('sparkleCanvas');
+    const sparkleCtx = sparkleCanvas.getContext('2d');
+    let sparkles = [];
+
+    function setupSparkles() {
+      sparkleCanvas.width = window.innerWidth;
+      sparkleCanvas.height = window.innerHeight;
+      for (let i = 0; i < 50; i++) {
+        sparkles.push({
+          x: Math.random() * sparkleCanvas.width,
+          y: Math.random() * sparkleCanvas.height,
+          r: Math.random() * 1.5 + 0.5,
+          alpha: Math.random(),
+          speedY: Math.random() * 0.5,
+        });
+      }
+    }
+    setupSparkles();
+
+    function drawSparkles() {
+      sparkleCtx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
+      sparkles.forEach(s => {
+        sparkleCtx.beginPath();
+        sparkleCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        sparkleCtx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+        sparkleCtx.shadowBlur = 10;
+        sparkleCtx.shadowColor = "#fff";
+        sparkleCtx.fill();
+        s.y -= s.speedY;
+        s.alpha += (Math.random() - 0.5) * 0.05;
+        if (s.y < 0) s.y = sparkleCanvas.height;
+        if (s.alpha < 0) s.alpha = 0.5;
+        if (s.alpha > 1) s.alpha = 1;
+      });
+      requestAnimationFrame(drawSparkles);
+    }
+    drawSparkles();
+
+    // No Button Runs Away — stays in window
+    const noBtn = document.querySelector('.love-btn.no');
+    let isMoving = false;
+
+    document.addEventListener('mousemove', (e) => {
+      if (isMoving) return;
+
+      const rect = noBtn.getBoundingClientRect();
+      const dx = e.clientX - (rect.left + rect.width / 2);
+      const dy = e.clientY - (rect.top + rect.height / 2);
+      const distance = Math.hypot(dx, dy);
+
+      if (distance < 100) {
+        isMoving = true;
+
+        const btnWidth = rect.width;
+        const btnHeight = rect.height;
+        const padding = 20;
+
+        const maxX = window.innerWidth - btnWidth - padding;
+        const maxY = window.innerHeight - btnHeight - padding;
+
+        const newLeft = Math.floor(Math.random() * maxX);
+        const newTop = Math.floor(Math.random() * maxY);
+
+        noBtn.style.position = 'absolute';
+        noBtn.style.left = `${newLeft}px`;
+        noBtn.style.top = `${newTop}px`;
+
+        setTimeout(() => isMoving = false, 300);
+      }
+    });
+    // Yes button opens new page
+    const yesBtn = document.querySelector('.love-btn.yes');
+    yesBtn.addEventListener('click', () => {
+      window.location.href = "love.html";
+    });
+
+  </script>
+</body>
+</html>
