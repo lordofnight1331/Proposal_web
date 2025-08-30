@@ -1,6 +1,6 @@
 # Love Animation Web Project - README
 
-## 📌 Overview
+##  Overview
 
 This project is a beautifully animated, interactive, and emotionally expressive three-page HTML/CSS/JavaScript web experience that conveys a romantic theme. It contains heart animations, text transitions, particle effects, and interactive buttons that guide the user through a love-themed journey.
 
@@ -12,7 +12,7 @@ The three files included in the project are:
 
 ---
 
-## 🌟 Features
+##  Features
 
 ### 1. **Heart + Wing Animation (index1.html)**
 
@@ -41,7 +41,7 @@ The three files included in the project are:
 
 ---
 
-## 🎨 Design Language
+##  Design Language
 
 * **Typography**: Uses *Dancing Script*, a cursive and elegant Google Font, to express love and playfulness.
 * **Color Palette**:
@@ -55,7 +55,7 @@ The three files included in the project are:
 
 ---
 
-## 📂 File Structure
+##  File Structure
 
 ```
 project-root/
@@ -66,7 +66,7 @@ project-root/
 
 ---
 
-## ⚙️ How It Works
+## ⚙ How It Works
 
 ### index1.html
 
@@ -92,7 +92,7 @@ project-root/
 
 ---
 
-## 🧪 Technical Highlights
+##  Technical Highlights
 
 * **Canvas Manipulation**: Advanced use of the HTML5 Canvas API to draw and animate paths (hearts, wings, trails).
 * **Animation Timing**: All animations use `requestAnimationFrame()` for smooth transitions.
@@ -105,7 +105,7 @@ project-root/
 
 ---
 
-## 💻 How to Run Locally
+##  How to Run Locally
 
 1. Download all 3 HTML files into the same directory.
 2. Open `index1.html` using any modern browser (Chrome, Firefox, Edge).
@@ -119,7 +119,7 @@ No backend or server is required – it's a purely client-side HTML/CSS/JS proje
 
 ---
 
-## 📱 Responsiveness
+##  Responsiveness
 
 * Designed to run smoothly across all screen sizes.
 * Font size, canvas, and button placements scale based on `window.innerWidth` and `window.innerHeight`.
@@ -127,7 +127,7 @@ No backend or server is required – it's a purely client-side HTML/CSS/JS proje
 
 ---
 
-## 🔧 Customization Guide
+##  Customization Guide
 
 ### Fonts
 
@@ -153,7 +153,7 @@ No backend or server is required – it's a purely client-side HTML/CSS/JS proje
 
 ---
 
-## ⚠️ Limitations
+##  Limitations
 
 * Since the app is entirely front-end, it does not store user progress.
 * There are no transitions backward (e.g., no back button).
@@ -161,7 +161,7 @@ No backend or server is required – it's a purely client-side HTML/CSS/JS proje
 
 ---
 
-## 🤍 Use Case Ideas
+##  Use Case Ideas
 
 * **Digital Love Letter**
 * **Valentine’s Day Website**
@@ -171,7 +171,7 @@ No backend or server is required – it's a purely client-side HTML/CSS/JS proje
 
 ---
 
-## 📌 Credits
+##  Credits
 
 * Background image from [Unsplash](https://unsplash.com/)
 * Font: [Google Fonts – Dancing Script](https://fonts.google.com/specimen/Dancing+Script)
@@ -179,7 +179,7 @@ No backend or server is required – it's a purely client-side HTML/CSS/JS proje
 
 ---
 
-## 📈 Future Improvements
+##  Future Improvements
 
 * Add audio playback (soft music) to enhance emotion.
 * Allow user to enter their name or personalize the quote list.
@@ -189,7 +189,7 @@ No backend or server is required – it's a purely client-side HTML/CSS/JS proje
 
 ---
 
-## 🙏 Final Words
+##  Final Words
 
 This project was made to express love in the most visually stunning and interactive way possible, using nothing but HTML, CSS, and JavaScript. If you're giving this to someone special, we hope it brings a smile. ❤️
 
